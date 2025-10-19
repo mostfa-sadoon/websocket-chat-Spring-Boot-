@@ -7,136 +7,167 @@
     <title>Hallo Page</title>
     <style>
         body {
-          font-family: "Comic Sans MS", sans-serif;
-          background-color: #f7f7f7;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 100vh;
-          margin: 0;
+            font-family: "Comic Sans MS", sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
 
         .chat-container {
-          background-color: #fff;
-          width: 800px;
-          height: 550px;
-          border-radius: 20px;
-          box-shadow: 0 0 10px rgba(0,0,0,0.1);
-          display: flex;
-          flex-direction: column;
-          padding: 15px;
+            background-color: #fff;
+            width: 800px;
+            height: 550px;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
         }
 
         .header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          font-size: 18px;
-          font-weight: bold;
-          padding: 5px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 5px 10px;
         }
 
         .content {
-          display: flex;
-          flex: 1;
-          margin-top: 10px;
+            display: flex;
+            flex: 1;
+            margin-top: 10px;
+            gap: 10px;
         }
 
-        .messages-box {
-          flex: 3;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .messages {
-          flex: 1;
-          background-color: #fafafa;
-          border: 2px solid #ccc;
-          border-radius: 15px;
-          padding: 15px;
-          margin-right: 10px;
-          overflow-y: auto;
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-end;
-        }
-
-        .message {
-          max-width: 70%;
-          padding: 8px 12px;
-          border-radius: 15px;
-          margin: 5px 0;
-        }
-
-        .message.left {
-          background-color: #e0e0e0;
-          align-self: flex-start;
-        }
-
-        .message.right {
-          background-color: #4caf50;
-          color: white;
-          align-self: flex-end;
-        }
-
+        /* 🧱 LEFT: Users List */
         .users {
-          flex: 1;
-          background-color: #f0f0f0;
-          border-radius: 15px;
-          padding: 10px;
+            flex: 1;
+            background-color: #f0f0f0;
+            border-radius: 15px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            height: 100%;
         }
 
         .users h3 {
-          margin-top: 0;
-          text-align: center;
+            margin-top: 0;
+            text-align: center;
         }
 
         .user {
-          background-color: #ddd;
-          padding: 8px;
-          border-radius: 10px;
-          margin-bottom: 8px;
-          text-align: center;
-          cursor: pointer;
-          transition: background 0.3s;
+            background-color: #ddd;
+            padding: 8px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s;
         }
 
         .user:hover {
-          background-color: #ccc;
+            background-color: #ccc;
         }
 
+        /* 💬 RIGHT: Messages area */
+        .messages-box {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+            background-color: #fafafa;
+            border: 2px solid #ccc;
+            border-radius: 15px;
+            padding: 10px;
+            position: relative;
+        }
+
+        /* Make chat area fixed height and scrollable */
+         .messages {
+            height: 400px;            /* fixed height for chat area */
+            overflow-y: auto;         /* enable vertical scroll */
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 8px 12px;
+            border-radius: 15px;
+            margin: 5px 0;
+            font-size: 15px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .message.left {
+            background-color: #e0e0e0;
+            align-self: flex-start;
+        }
+
+        .message.right {
+            background-color: #4caf50;
+            color: white;
+            align-self: flex-end;
+        }
+
+        /* 🖋️ Input area stays below chat */
         .input-area {
-          display: flex;
-          margin-top: 10px;
+            display: flex;
+            margin-top: 10px;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
         }
 
         .input-area input {
-          flex: 1;
-          padding: 10px;
-          border-radius: 10px;
-          border: 1px solid #ccc;
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-family: "Comic Sans MS", sans-serif;
         }
 
         .input-area button {
-          margin-left: 10px;
-          padding: 10px 20px;
-          border-radius: 10px;
-          border: none;
-          background-color: #4caf50;
-          color: white;
-          cursor: pointer;
-          transition: background 0.3s;
+            margin-left: 10px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            background-color: #4caf50;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-family: "Comic Sans MS", sans-serif;
         }
 
         .input-area button:hover {
-          background-color: #45a049;
+            background-color: #45a049;
+        }
+
+        /* 🎯 Scrollbar style (optional) */
+        .messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .messages::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 3px;
+        }
+
+        .messages::-webkit-scrollbar-thumb:hover {
+            background-color: #aaa;
         }
     </style>
+
 </head>
 <body>
 <div class="chat-container">
     <div class="header">
-        <div>hallo page</div>
+        <div id="test">hallo page</div>
         <form th:action="@{/logout}" method="post" style="display:inline;">
             <button type="submit" style="background:none;border:none;color:#f44336;cursor:pointer;">
                 logout
@@ -188,73 +219,100 @@
 
 <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 
-
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 
 <script>
-    $(document).ready(function() {
-        const token = $("meta[name='_csrf']").attr("content");
-        const header = $("meta[name='_csrf_header']").attr("content");
 
-<!--        const socket  = new SockJS('/ws');-->
-<!--        const stompClient = Stomp.over(socket);-->
-<!--       stompClient.connect({}, function(frame) {-->
-<!--            console.log('Connected: ' + frame);-->
 
-<!--            // ✅ Subscribe to topic-->
-<!--            stompClient.subscribe('/topic/messages', function(messageOutput) {-->
-<!--                const message = JSON.parse(messageOutput.body);-->
-<!--                displayMessage(message);-->
-<!--            });-->
-<!--        });-->
 
-    function sendMessage() {
-            var sender_id = $('#sender_id').val();
-            var reciver_id = $('#reciver_id').val();
-            var chat_id = $('#chat_id').val();
-            var message = $("#message").val().trim();
+$(document).ready(function() {
+    const messagesDiv = $('#chat_box .messages');
+    messagesDiv.scrollTop(messagesDiv[0].scrollHeight);
 
-          if (message === "") return; // prevent sending empty messages
+    const token = $("meta[name='_csrf']").attr("content");
+    const header = $("meta[name='_csrf_header']").attr("content");
 
-            const messageData = {
-                body: message,
-                sender_id: sender_id,
-                reciver_id: reciver_id,
-                chat_id: chat_id
-            };
 
-            $.ajax({
-                url: "/sendMessage",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(messageData),
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader(header, token); // 🔒 include CSRF header
-                },
-                success: function (response) {
-                    console.log("Message sent successfully:", response);
-                    $("#message").val(""); // clear input
-                    $('#chat_box').html(response);
-                },
-                error: function (xhr) {
-                    console.error("Error sending message:", xhr.responseText);
-                }
+    const socket  = new SockJS('/ws');
+    const stompClient = Stomp.over(socket);
+
+       stompClient.connect({}, function(frame) {
+            console.log('Connected: ' + frame);
+
+            // ✅ Subscribe to topic
+            stompClient.subscribe('/topic/messages', function(messageOutput) {
+                console.log(messageOutput);
+                const message = JSON.parse(messageOutput.body);
+                displayMessage(message);
             });
+        });
+
+
+   function displayMessage(message) {
+        const side = (message.sender_id == $('#sender_id').val()) ? 'right' : 'left';
+        const msgHtml = '<div class="message ' + side + '">' + message.body + '</div>';
+
+        $('#chat_box .messages').append(msgHtml);
+
+        const messagesDiv = $('#chat_box .messages');
+        messagesDiv.scrollTop(messagesDiv[0].scrollHeight);
+   }
+
+      function sendMessage() {
+
     }
 
-        $("#sendButton").click(function () {
-           sendMessage();
-        });
+function sendMessage() {
+        var sender_id = $('#sender_id').val();
+        var reciver_id = $('#reciver_id').val();
+        var chat_id = $('#chat_id').val();
+        var message = $("#message").val().trim();
 
+      if (message === "") return; // prevent sending empty messages
 
-      // ⌨️ Send on Enter key
-        $("#message").keypress(function (e) {
-            if (e.which === 13 && !e.shiftKey) { // Enter without Shift
-                e.preventDefault(); // prevent newline
-                sendMessage();
-            }
-        });
+        const messageData = {
+            body: message,
+            sender_id: sender_id,
+            reciver_id: reciver_id,
+            chat_id: chat_id
+        };
 
+        stompClient.send("/app/sendMessage", {}, JSON.stringify(messageData));
+        $("#message").val("");
+        <!--        $.ajax({-->
+        <!--            url: "/send",-->
+        <!--            type: "POST",-->
+        <!--            contentType: "application/json",-->
+        <!--            data: JSON.stringify(messageData),-->
+        <!--            beforeSend: function (xhr) {-->
+        <!--                xhr.setRequestHeader(header, token); // 🔒 include CSRF header-->
+        <!--            },-->
+        <!--            success: function (response) {-->
+        <!--                console.log("Message sent successfully:", response);-->
+        <!--                $("#message").val(""); // clear input-->
+        <!--                $('#chat_box').html(response);-->
+        <!--            },-->
+        <!--            error: function (xhr) {-->
+        <!--                console.error("Error sending message:", xhr.responseText);-->
+        <!--            }-->
+        <!--        });-->
+}
+
+    $("#sendButton").click(function () {
+       sendMessage();
     });
+
+
+  // ⌨️ Send on Enter key
+    $("#message").keypress(function (e) {
+        if (e.which === 13 && !e.shiftKey) { // Enter without Shift
+            e.preventDefault(); // prevent newline
+            sendMessage();
+        }
+    });
+
+});
 </script>
 </body>
 </html>

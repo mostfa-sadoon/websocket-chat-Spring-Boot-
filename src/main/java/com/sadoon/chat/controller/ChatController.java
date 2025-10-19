@@ -15,6 +15,7 @@ import com.sadoon.chat.service.imp.UserServiceImp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,8 +53,18 @@ public class ChatController {
         return "chat";
     }
 
-    @PostMapping("sendMessage")
-    public String save(@RequestBody MessageDto dto ,Model model){
+    @MessageMapping("sendMessage")
+    @SendTo("/topic/messages")
+    public MessageDto save(@RequestBody MessageDto dto ){
+        log.info("dto is :{}",dto);
+        Message message=  messageMapper.MessageDtoToEntity(dto);
+        messageServiceImp.save(message);
+        return  dto;
+    }
+
+
+    @PostMapping("send")
+    public String saveMessage(@RequestBody MessageDto dto ,Model model){
         log.info("dto is :{}",dto);
         Message message=  messageMapper.MessageDtoToEntity(dto);
         messageServiceImp.save(message);
