@@ -1,0 +1,3 @@
+<div class="messages">
+    <div  th:each="message : ${chat.receivedMessages}" th:class="'message ' + (${message.sender.id == currentUserId} ? 'right' : 'left')" th:text="${message.body}"></div>
+</div>

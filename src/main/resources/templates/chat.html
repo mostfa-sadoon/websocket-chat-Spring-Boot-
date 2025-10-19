@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <title>Hallo Page</title>
+    <style>
+        body {
+          font-family: "Comic Sans MS", sans-serif;
+          background-color: #f7f7f7;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          margin: 0;
+        }
+
+        .chat-container {
+          background-color: #fff;
+          width: 800px;
+          height: 550px;
+          border-radius: 20px;
+          box-shadow: 0 0 10px rgba(0,0,0,0.1);
+          display: flex;
+          flex-direction: column;
+          padding: 15px;
+        }
+
+        .header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 18px;
+          font-weight: bold;
+          padding: 5px 10px;
+        }
+
+        .content {
+          display: flex;
+          flex: 1;
+          margin-top: 10px;
+        }
+
+        .messages-box {
+          flex: 3;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .messages {
+          flex: 1;
+          background-color: #fafafa;
+          border: 2px solid #ccc;
+          border-radius: 15px;
+          padding: 15px;
+          margin-right: 10px;
+          overflow-y: auto;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+        }
+
+        .message {
+          max-width: 70%;
+          padding: 8px 12px;
+          border-radius: 15px;
+          margin: 5px 0;
+        }
+
+        .message.left {
+          background-color: #e0e0e0;
+          align-self: flex-start;
+        }
+
+        .message.right {
+          background-color: #4caf50;
+          color: white;
+          align-self: flex-end;
+        }
+
+        .users {
+          flex: 1;
+          background-color: #f0f0f0;
+          border-radius: 15px;
+          padding: 10px;
+        }
+
+        .users h3 {
+          margin-top: 0;
+          text-align: center;
+        }
+
+        .user {
+          background-color: #ddd;
+          padding: 8px;
+          border-radius: 10px;
+          margin-bottom: 8px;
+          text-align: center;
+          cursor: pointer;
+          transition: background 0.3s;
+        }
+
+        .user:hover {
+          background-color: #ccc;
+        }
+
+        .input-area {
+          display: flex;
+          margin-top: 10px;
+        }
+
+        .input-area input {
+          flex: 1;
+          padding: 10px;
+          border-radius: 10px;
+          border: 1px solid #ccc;
+        }
+
+        .input-area button {
+          margin-left: 10px;
+          padding: 10px 20px;
+          border-radius: 10px;
+          border: none;
+          background-color: #4caf50;
+          color: white;
+          cursor: pointer;
+          transition: background 0.3s;
+        }
+
+        .input-area button:hover {
+          background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<div class="chat-container">
+    <div class="header">
+        <div>hallo page</div>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" style="background:none;border:none;color:#f44336;cursor:pointer;">
+                logout
+            </button>
+        </form>
+
+    </div>
+
+    <div class="content">
+        <div class="messages-box">
+
+            <div th:each="chat, stat : ${chats}" th:if="${stat.index == 0}" class="chat-box"  id="chat_box">
+                <div class="messages">
+                        <div  th:each="message : ${chat.receivedMessages}" th:class="'message ' + (${message.sender.id == currentUserId} ? 'right' : 'left')" th:text="${message.body}"></div>
+                </div>
+            </div>
+
+            <!-- Input area BELOW the chat box -->
+            <div class="input-area">
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+                <input type="text" id="message" name="message" placeholder="write your message">
+                <input type="hidden" id="reciver_id" name="reciver_id"
+                       th:each="cu : ${chats[0].chatUsers}"
+                       th:if="${cu.user.id != currentUserId}"
+                       th:value="${cu.user.id}">
+                <input type="hidden" id="sender_id" name="sender_id" th:value="${currentUserId}">
+                <input type="hidden" id="chat_id" name="chat_id" th:value="${chats[0].id}">
+                <button id="sendButton">send</button>
+            </div>
+        </div>
+
+        <div class="users">
+            <h3>chats</h3>
+
+            <div th:if="${chats.isEmpty()}">
+                <p>No chats found.</p>
+            </div>
+
+            <div th:each="chat : ${chats}" class="chat-box">
+                <div th:each="cu : ${chat.chatUsers}">
+                    <div class="user"  th:if="${cu.user.id != currentUserId}" th:text="${cu.user.username}" data-id="${cu.chat.id}"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+
+
+<script>
+    $(document).ready(function() {
+        const token = $("meta[name='_csrf']").attr("content");
+        const header = $("meta[name='_csrf_header']").attr("content");
+
+<!--        const socket  = new SockJS('/ws');-->
+<!--        const stompClient = Stomp.over(socket);-->
+<!--       stompClient.connect({}, function(frame) {-->
+<!--            console.log('Connected: ' + frame);-->
+
+<!--            // ✅ Subscribe to topic-->
+<!--            stompClient.subscribe('/topic/messages', function(messageOutput) {-->
+<!--                const message = JSON.parse(messageOutput.body);-->
+<!--                displayMessage(message);-->
+<!--            });-->
+<!--        });-->
+
+    function sendMessage() {
+            var sender_id = $('#sender_id').val();
+            var reciver_id = $('#reciver_id').val();
+            var chat_id = $('#chat_id').val();
+            var message = $("#message").val().trim();
+
+          if (message === "") return; // prevent sending empty messages
+
+            const messageData = {
+                body: message,
+                sender_id: sender_id,
+                reciver_id: reciver_id,
+                chat_id: chat_id
+            };
+
+            $.ajax({
+                url: "/sendMessage",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(messageData),
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token); // 🔒 include CSRF header
+                },
+                success: function (response) {
+                    console.log("Message sent successfully:", response);
+                    $("#message").val(""); // clear input
+                    $('#chat_box').html(response);
+                },
+                error: function (xhr) {
+                    console.error("Error sending message:", xhr.responseText);
+                }
+            });
+    }
+
+        $("#sendButton").click(function () {
+           sendMessage();
+        });
+
+
+      // ⌨️ Send on Enter key
+        $("#message").keypress(function (e) {
+            if (e.which === 13 && !e.shiftKey) { // Enter without Shift
+                e.preventDefault(); // prevent newline
+                sendMessage();
+            }
+        });
+
+    });
+</script>
+</body>
+</html>
